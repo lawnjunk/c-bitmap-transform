@@ -11,8 +11,8 @@
     return nums[offset]; \
   }
 
-make_read8(read_uint8, uint8_t)
-make_read8(read_int8, int8_t)
+make_read8(read_uint8, uint8_t);
+make_read8(read_int8, int8_t);
 
 // make_write8 creates functions for writing a signed
 // or unsigned 8bit int, at a size_t offse
@@ -21,15 +21,19 @@ make_read8(read_int8, int8_t)
 // return 0 on success
 #define make_write8(name, type) \
   int name(byte_array_t *self, type value, size_t offset){ \
-    if(offset > self->length) \
+    if(offset > self->length || offset < 0) \
       return -1; \
     type *nums = (type *) self->buffer->data; \
     nums[offset] = value; \
     return 0; \
   }
 
-make_write8(write_uint8, uint8_t)
-make_write8(write_int8, int8_t)
+make_write8(write_uint8, uint8_t);
+make_write8(write_int8, int8_t);
+
+int write_uint16_LE(byte_array_t *self, uint16_t value, size_t offset){
+  int   
+}
 
 byte_array_t *new_byte_array(size_t length){
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));

@@ -8,5 +8,5 @@ all:
 E:
 	clang -E ${CFLAGS}  main.c ${LIBS}
 
-runtest: 
+t: 
 	make -C test
