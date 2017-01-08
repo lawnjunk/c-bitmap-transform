@@ -25,7 +25,11 @@ size_t size_of_buffer_type(buffer_type_t type){
   }
 }
 
-buffer_t *new_buffer(size_t size, buffer_type_t type){
+buffer_t *new_buffer(size_t length, buffer_type_t type){
   buffer_t *result = GC_MALLOC(sizeof(buffer_t));
+  result->type = type;
+  result->length = length;
+  result->size = size_of_buffer_type(type) * length;
+  result->data = GC_MALLOC(result->size);
   return result;
 } 

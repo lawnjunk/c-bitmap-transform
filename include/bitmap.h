@@ -4,7 +4,6 @@
 
 #ifndef BITMAP
 #define BITMAP
-
 #define bitmap_t struct bitmap
 
 struct bitmap {

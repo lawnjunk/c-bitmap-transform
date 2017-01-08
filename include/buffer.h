@@ -17,11 +17,16 @@ typedef enum buffer_type {
 
 typedef struct buffer {
   void *data; 
-  buffer_type_t *type;
+  buffer_type_t type;
   size_t length;
+  size_t size;
 } buffer_t;
 
+
+// TODO: test
 buffer_t *new_buffer(size_t bytes, buffer_type_t type);
-size_t size_of_buffer_type(buffer_type_t type);
+
+// TODONE: tested
+size_t size_of_buffer_type(buffer_type_t type); 
 
 #endif

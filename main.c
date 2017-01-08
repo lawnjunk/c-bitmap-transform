@@ -9,7 +9,6 @@ int main(int argc, char **argv){
 
   void *lul = GC_MALLOC(sizeof(bitmap_t));
   new_bitmap(lul);
-/*bitmap_t *bm = read_bitmap("./main.c");*/
 
   printf("%ld", size_of_buffer_type(INT));
   //TODO: parse args
