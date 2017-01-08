@@ -34,22 +34,31 @@ MU_TEST(test_byte_array){
   mu_check(bAR->buffer->length == 10);
 
   int i;
-  uint8_t num;
+  uint8_t unum8;;
+  int8_t num8;
   // check that data is initalized to 0
   for(i=0; i<bAR->length; i++){
-    num = apply(bAR, read_uint8, i);
-    mu_check(num == 0);
+    unum8 = apply(bAR, read_uint8, i);
+    mu_check(unum8 == 0);
   }
 
   // testing write_uint8 with valid offset
   int check = apply(bAR, write_uint8, 2, 1);
   mu_check(check == 0);
-  num = apply(bAR, read_uint8, 1);
-  mu_check(num = 2);
+  // testing read_uint8 
+  unum8 = apply(bAR, read_uint8, 1);
+  mu_check(unum8 = 2);
 
   // testing write_uint8 with invalid offset
   check = apply(bAR, write_uint8, 2, 100);
   mu_check(check == -1);
+
+  // testing write_int8 with valid offset
+  check = apply(bAR, write_int8, -120, 9);
+  mu_check(check == 0);
+  // testing read_int8 
+  num8 = apply(bAR, read_int8, 9);
+  mu_check(num8 == -120);
 }
 
 MU_TEST_SUITE(test_suite) {
