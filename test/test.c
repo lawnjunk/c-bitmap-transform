@@ -82,6 +82,19 @@ MU_TEST(test_byte_array){
   uint16_t uint16;
   uint16 = apply(bAR, read_uint16_LE, 0);
   mu_check(uint16 == 0xffee);
+
+  uint16 = apply(bAR, read_int16_LE, 0);
+  mu_check(uint16 == 0xffee);
+  /*check = apply(bAR, write_int16_LE, 0xAFB7, 2);*/
+  /*mu_check(check == 0);*/
+
+  check = apply(bAR, write_int16_LE, 0xaabb, 1);
+  mu_check(check == 0);
+  unum8 = apply(bAR, read_uint8, 1);
+  mu_check(unum8 ==  0xbb);
+  unum8 = apply(bAR, read_uint8, 2);
+  mu_check(unum8 ==  0xaa);
+  
 }
 
   

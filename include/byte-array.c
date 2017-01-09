@@ -31,23 +31,49 @@ make_read8(read_int8, int8_t);
 make_write8(write_uint8, uint8_t);
 make_write8(write_int8, int8_t);
 
-int write_uint16_LE(byte_array_t *self, uint16_t value, size_t offset){
-  if(offset > self->length)
-    return -1; 
-  uint8_t *nums = (uint8_t *) self->buffer->data;
-  nums[offset] = value & 0x00ff;
-  nums[offset+1] = value >> 8;
 
-  return 0;
+#define make_read16(name, type) \
+  type name(byte_array_t *self, size_t offset){ \
+    uint8_t *nums = (uint8_t *) self->buffer->data; \
+    type result; \
+    result = (type) nums[offset+1]; \
+    result = result << 8; \
+    return result | nums[offset]; \
+  }
+
+make_read16(read_uint16_LE, uint16_t);
+make_read16(read_int16_LE, int16_t);
+
+/*uint16_t read_uint16_LE(byte_array_t *self, size_t offset){*/
+  /*uint8_t *nums = (uint8_t *) self->buffer->data;*/
+  /*uint16_t result;*/
+  /*result = (uint16_t) nums[offset+1];*/
+  /*result = result << 8;*/
+  /*return result | nums[offset];*/
+/*}*/
+
+#define write_int16(name, type) \
+int name(byte_array_t *self, type value, size_t offset){ \
+  if(offset > self->length) \
+    return -1;  \
+  uint8_t *nums = (uint8_t *) self->buffer->data; \
+  nums[offset] = value & 0x00ff; \
+  nums[offset+1] = value >> 8; \
+  return 0; \
 }
 
-uint16_t read_uint16_LE(byte_array_t *self, size_t offset){
-  uint8_t *nums = (uint8_t *) self->buffer->data;
-  uint16_t result;
-  result = (uint16_t) nums[offset+1];
-  result = result << 8;
-  return result | nums[offset];
-}
+write_int16(write_uint16_LE, uint16_t);
+write_int16(write_int16_LE, int16_t);
+
+/*int write_uint16_LE(byte_array_t *self, uint16_t value, size_t offset){*/
+  /*if(offset > self->length)*/
+    /*return -1; */
+  /*uint8_t *nums = (uint8_t *) self->buffer->data;*/
+  /*nums[offset] = value & 0x00ff;*/
+  /*nums[offset+1] = value >> 8;*/
+
+  /*return 0;*/
+/*}*/
 
 byte_array_t *new_byte_array(size_t length){
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));
@@ -59,5 +85,7 @@ byte_array_t *new_byte_array(size_t length){
   result->write_int8 = &write_int8;
   result->read_uint16_LE = &read_uint16_LE;
   result->write_uint16_LE = &write_uint16_LE;
+  result->read_int16_LE = &read_int16_LE;
+  result->write_int16_LE = &write_int16_LE;
   return result;
 }
