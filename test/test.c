@@ -59,7 +59,29 @@ MU_TEST(test_byte_array){
   // testing read_int8 
   num8 = apply(bAR, read_int8, 9);
   mu_check(num8 == -120);
+
+
+   /*testing write_uint16_LE */
+  check = apply(bAR, write_uint16_LE, 0xffee, 0);
+  mu_check(check == 0);
+
+  unum8 = 0x7a;
+  printf("lul 0x%X \n", unum8);
+
+  for(i=0; i<bAR->length; i++){
+    unum8 = apply(bAR, read_uint8, i);
+    printf("index :%d, 0X%X\n", i, unum8);
+  }
+
+  unum8 = apply(bAR, read_uint8, 0);
+  mu_check(unum8 ==  0xee);
+  unum8 = apply(bAR, read_uint8, 1);
+  mu_check(unum8 ==  0xff);
+
+  
 }
+
+  
 
 MU_TEST_SUITE(test_suite) {
   MU_RUN_TEST(test_size_of_buffer_type);

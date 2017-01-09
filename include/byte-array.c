@@ -21,7 +21,7 @@ make_read8(read_int8, int8_t);
 // return 0 on success
 #define make_write8(name, type) \
   int name(byte_array_t *self, type value, size_t offset){ \
-    if(offset > self->length || offset < 0) \
+    if(offset > self->length) \
       return -1; \
     type *nums = (type *) self->buffer->data; \
     nums[offset] = value; \
@@ -32,7 +32,21 @@ make_write8(write_uint8, uint8_t);
 make_write8(write_int8, int8_t);
 
 int write_uint16_LE(byte_array_t *self, uint16_t value, size_t offset){
-  int   
+  if(offset > self->length)
+    return -1; 
+  uint8_t *nums = (uint8_t *) self->buffer->data;
+  nums[offset] = value & 0x00ff;
+  nums[offset+1] = value >> 8;
+
+  return 0;
+}
+
+uint16_t read_uint16_LE(byte_array_t *self, size_t offset){
+  uint8_t *nums = (uint8_t *) self->buffer->data;
+  uint16_t result;
+  result = (uint16_t) nums[offset+1];
+  result = result << 1;
+  return result & (uint8_t) nums[offset];
 }
 
 byte_array_t *new_byte_array(size_t length){
@@ -43,5 +57,7 @@ byte_array_t *new_byte_array(size_t length){
   result->read_int8 = &read_int8;
   result->write_uint8 = &write_uint8;
   result->write_int8 = &write_int8;
+  result->read_uint16_LE = &read_uint16_LE;
+  result->write_uint16_LE = &write_uint16_LE;
   return result;
 }
