@@ -5,6 +5,11 @@
 #include "buffer.h"
 #include "byte-array.h"
 
+#define byte_array_print(input) \
+  for(int i=0; i<input->length; i++){ \
+    printf("%s[%d]: 0X%X\n", #input, i, apply(input, read_uint8, i)); \
+  } 
+
 MU_TEST(test_size_of_buffer_type) {
   mu_check(size_of_buffer_type(INT) == sizeof(int32_t));
   mu_check(size_of_buffer_type(INT8) == sizeof(int8_t));
@@ -66,12 +71,6 @@ MU_TEST(test_byte_array){
   mu_check(check == 0);
 
   unum8 = 0x7a;
-  printf("lul 0x%X \n", unum8);
-
-  for(i=0; i<bAR->length; i++){
-    unum8 = apply(bAR, read_uint8, i);
-    printf("index :%d, 0X%X\n", i, unum8);
-  }
 
   unum8 = apply(bAR, read_uint8, 0);
   mu_check(unum8 ==  0xee);
@@ -95,6 +94,8 @@ MU_TEST(test_byte_array){
   unum8 = apply(bAR, read_uint8, 2);
   mu_check(unum8 ==  0xaa);
   
+  puts("");
+  byte_array_print(bAR);
 }
 
   
