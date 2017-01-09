@@ -45,8 +45,8 @@ uint16_t read_uint16_LE(byte_array_t *self, size_t offset){
   uint8_t *nums = (uint8_t *) self->buffer->data;
   uint16_t result;
   result = (uint16_t) nums[offset+1];
-  result = result << 1;
-  return result & (uint8_t) nums[offset];
+  result = result << 8;
+  return result | nums[offset];
 }
 
 byte_array_t *new_byte_array(size_t length){
