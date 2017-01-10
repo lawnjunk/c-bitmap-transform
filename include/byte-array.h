@@ -30,6 +30,7 @@ struct byte_array {
   bool (*write_uint32_LE)(byte_array_t *self, uint32_t value, size_t offset);
   //int32
   int32_t (*read_int32_LE)(byte_array_t *self, size_t offset);
+  bool (*write_int32_LE)(byte_array_t *self, int32_t value, size_t offset);
 };
 
 byte_array_t *new_byte_array(size_t length);
