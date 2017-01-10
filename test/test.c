@@ -117,8 +117,12 @@ MU_TEST(test_byte_array){
   mu_check(check == true);
   test_int32 = apply(bAR, read_uint32_LE, 0);
   mu_check(test_int32 == 0xff0077aa);
-}
 
+  check = apply(bAR, write_uint32_BE, 0xff0077aa, 0);
+  mu_check(check == true);
+  test_int32 = apply(bAR, read_uint32_LE, 0);
+  mu_check(test_int32 == 0xaa7700ff);
+}
   
 
 MU_TEST_SUITE(test_suite) {

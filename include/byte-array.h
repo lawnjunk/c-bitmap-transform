@@ -25,12 +25,20 @@ struct byte_array {
   // int16
   int16_t (*read_int16_LE)(byte_array_t *self, size_t offset);
   bool (*write_int16_LE)(byte_array_t *self, int16_t value, size_t offset);
-  // uint32
+  
+  // uint32 LE
   uint32_t (*read_uint32_LE)(byte_array_t *self, size_t offset);
   bool (*write_uint32_LE)(byte_array_t *self, uint32_t value, size_t offset);
-  //int32
+  // uint32 BE
+  uint32_t (*read_uint32_BE)(byte_array_t *self, size_t offset);
+  bool (*write_uint32_BE)(byte_array_t *self, uint32_t value, size_t offset);
+
+  //int32 LE
   int32_t (*read_int32_LE)(byte_array_t *self, size_t offset);
   bool (*write_int32_LE)(byte_array_t *self, int32_t value, size_t offset);
+  //in32 BE
+  int32_t (*read_int32_BE)(byte_array_t *self, size_t offset);
+  bool (*write_int32_BE)(byte_array_t *self, int32_t value, size_t offset);
 };
 
 byte_array_t *new_byte_array(size_t length);

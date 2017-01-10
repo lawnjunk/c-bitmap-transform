@@ -3,6 +3,11 @@
 #include "byte-array.h"
 #include "macros.h"
 
+typedef enum {
+  LE,
+  BE,
+} byte_array_endian;
+
 // make_read8 creates a functions for reading 8bit
 // signed and unsinged ints, at a size_t offset
 // return type (type)
@@ -69,20 +74,37 @@ type name(byte_array_t *self, size_t offset){ \
 read_int32(read_uint32_LE, uint32_t);
 read_int32(read_int32_LE, int32_t);
 
-#define make_write32LE(name, type) \
+
+// TODO: refactorthis to use #if LE instead of ? :
+// not a huge speed boost, but its one less check :]
+/*#define make_write32LE(name, type, endianness) \*/
+/*bool name(byte_array_t *self, type value, size_t offset){ \*/
+  /*if(offset > self->length) \*/
+    /*return false; \*/
+  /*uint8_t *nums = (uint8_t *) self->buffer->data; \*/
+  /*nums[offset] = endianness == LE ? value & 0xff : (value >> 24) & 0xff; \*/
+  /*nums[offset+1] = endianness == LE ? (value >> 8) & 0xff: (value >> 16) & 0xff; \*/
+  /*nums[offset+2] = endianness == LE ? (value >> 16) & 0xff: (value >> 8) & 0xff; \*/
+  /*nums[offset+3] = endianness == LE ? (value >> 24) & 0xff: value & 0xff; \*/
+  /*return true; \*/
+/*}*/
+
+#define make_write32LE(name, type, endianness) \
 bool name(byte_array_t *self, type value, size_t offset){ \
   if(offset > self->length) \
     return false; \
   uint8_t *nums = (uint8_t *) self->buffer->data; \
-  nums[offset] = value & 0xff; \
-  nums[offset+1] = (value >> 8) & 0xff; \
-  nums[offset+2] = (value >> 16) & 0xff; \
-  nums[offset+3] = (value >> 24) & 0xff; \
+  nums[offset + (endianness == LE ? 0 : 3)] = value & 0xff ; \
+  nums[offset + (endianness == LE ? 1 : 2)] = (value >> 8) & 0xff; \
+  nums[offset + (endianness == LE ? 2 : 1)] = (value >> 16) & 0xff; \
+  nums[offset + (endianness == LE ? 3 : 0)] = (value >> 24) & 0xff; \
   return true; \
 }
 
-make_write32LE(write_uint32_LE, uint32_t);
-make_write32LE(write_int32_LE, int32_t);
+make_write32LE(write_uint32_LE, uint32_t, LE);
+make_write32LE(write_int32_LE, int32_t, LE);
+make_write32LE(write_uint32_BE, uint32_t, BE);
+make_write32LE(write_int32_BE, int32_t, BE);
 
 byte_array_t *new_byte_array(size_t length){
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));
@@ -100,5 +122,7 @@ byte_array_t *new_byte_array(size_t length){
   result->read_int32_LE = &read_int32_LE;
   result->write_uint32_LE = &write_uint32_LE;
   result->write_int32_LE = &write_int32_LE;
+  result->write_uint32_BE = &write_uint32_BE;
+  result->write_int32_BE = &write_int32_BE;
   return result;
 }
