@@ -48,27 +48,26 @@ MU_TEST(test_byte_array){
   }
 
   // testing write_uint8 with valid offset
-  int check = apply(bAR, write_uint8, 2, 1);
-  mu_check(check == 0);
+  bool check = apply(bAR, write_uint8, 2, 1);
+  mu_check(check == true);
   // testing read_uint8 
   unum8 = apply(bAR, read_uint8, 1);
   mu_check(unum8 = 2);
 
   // testing write_uint8 with invalid offset
   check = apply(bAR, write_uint8, 2, 100);
-  mu_check(check == -1);
+  mu_check(check == false);
 
   // testing write_int8 with valid offset
   check = apply(bAR, write_int8, -120, 9);
-  mu_check(check == 0);
+  mu_check(check == true);
   // testing read_int8 
   num8 = apply(bAR, read_int8, 9);
   mu_check(num8 == -120);
 
-
    /*testing write_uint16_LE */
   check = apply(bAR, write_uint16_LE, 0xffee, 0);
-  mu_check(check == 0);
+  mu_check(check == true);
 
   unum8 = 0x7a;
 
@@ -85,10 +84,10 @@ MU_TEST(test_byte_array){
   uint16 = apply(bAR, read_int16_LE, 0);
   mu_check(uint16 == 0xffee);
   /*check = apply(bAR, write_int16_LE, 0xAFB7, 2);*/
-  /*mu_check(check == 0);*/
+  /*mu_check(check == true);*/
 
   check = apply(bAR, write_int16_LE, 0xaabb, 1);
-  mu_check(check == 0);
+  mu_check(check == true);
   unum8 = apply(bAR, read_uint8, 1);
   mu_check(unum8 ==  0xbb);
   unum8 = apply(bAR, read_uint8, 2);
@@ -96,6 +95,23 @@ MU_TEST(test_byte_array){
   
   puts("");
   byte_array_print(bAR);
+
+  uint32_t test_uint32;
+  apply(bAR, write_uint16_LE, 0xffaa, 2);
+  apply(bAR, write_uint16_LE, 0xbbee, 0);
+  test_uint32 = apply(bAR, read_uint32_LE, 0);
+  mu_check(test_uint32 == 0xffaabbee);
+
+  int32_t test_int32;
+  apply(bAR, write_int16_LE, 0xffaa, 2);
+  apply(bAR, write_int16_LE, 0xbbee, 0);
+  test_int32 = apply(bAR, read_int32_LE, 0);
+  mu_check(test_int32 == 0xffaabbee);
+
+  check = apply(bAR, write_uint32_LE, 0xaabbccdd, 0);
+  mu_check(check == true);
+  test_uint32 = apply(bAR, read_uint32_LE, 0);
+  mu_check(test_uint32 == 0xaabbccdd);
 }
 
   

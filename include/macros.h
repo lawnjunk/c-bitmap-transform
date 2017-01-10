@@ -6,4 +6,9 @@
 #define call(item, method) item->method(item)
 #define apply(item, method, args...) item->method(item, args)
 
+typedef enum {
+  false=0,
+  true,
+} bool;
+
 #endif

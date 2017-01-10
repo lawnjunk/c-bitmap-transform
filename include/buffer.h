@@ -4,7 +4,7 @@
 #include <gc.h>
 
 typedef enum buffer_type {
-    INT, 
+    INT,  
     INT8, 
     INT16, 
     INT32, 
@@ -18,8 +18,8 @@ typedef enum buffer_type {
 typedef struct buffer {
   void *data; 
   buffer_type_t type;
-  size_t length;
-  size_t size;
+  size_t length; // lenth in number of type
+  size_t size;   // size in bytes
 } buffer_t;
 
 
