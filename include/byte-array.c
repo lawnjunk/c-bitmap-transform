@@ -37,30 +37,34 @@ make_read8(read_int8, int8_t);
 make_write8(write_uint8, uint8_t);
 make_write8(write_int8, int8_t);
 
-#define make_read16(name, type) \
+#define make_read16(name, type, endianness) \
   type name(byte_array_t *self, size_t offset){ \
     uint8_t *nums = (uint8_t *) self->buffer->data; \
     type result; \
-    result = (type) nums[offset+1]; \
+    result = (type) nums[offset + (endianness == LE ? 1 : 0)]; \
     result = result << 8; \
-    return result | nums[offset]; \
+    return result | nums[offset + (endianness == LE ? 0 : 1)]; \
   }
 
-make_read16(read_uint16_LE, uint16_t);
-make_read16(read_int16_LE, int16_t);
+make_read16(read_uint16_LE, uint16_t, LE);
+make_read16(read_int16_LE, int16_t, LE);
+make_read16(read_uint16_BE, uint16_t, BE);
+make_read16(read_int16_BE, int16_t, BE);
 
-#define write_int16(name, type) \
+#define write_int16(name, type, endianness) \
 bool name(byte_array_t *self, type value, size_t offset){ \
   if(offset > self->length) \
     return false;  \
   uint8_t *nums = (uint8_t *) self->buffer->data; \
-  nums[offset] = value & 0xff; \
-  nums[offset+1] = value >> 8; \
+  nums[offset + (endianness == LE ? 0 : 1)] = value & 0xff; \
+  nums[offset + (endianness == LE ? 1 : 0)] = value >> 8; \
   return true; \
 }
 
-write_int16(write_uint16_LE, uint16_t);
-write_int16(write_int16_LE, int16_t);
+write_int16(write_uint16_LE, uint16_t, LE);
+write_int16(write_int16_LE, int16_t, LE);
+write_int16(write_uint16_BE, uint16_t, BE);
+write_int16(write_int16_BE, int16_t, BE);
 
 #define read_int32(name, type, endianness) \
 type name(byte_array_t *self, size_t offset){ \
@@ -99,14 +103,21 @@ byte_array_t *new_byte_array(size_t length){
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));
   result->buffer = new_buffer(length, UINT8);
   result->length = length;
+
   result->read_uint8 = &read_uint8;
   result->read_int8 = &read_int8;
   result->write_uint8 = &write_uint8;
   result->write_int8 = &write_int8;
+
   result->read_uint16_LE = &read_uint16_LE;
   result->read_int16_LE = &read_int16_LE;
+  result->read_uint16_BE = &read_uint16_BE;
+  result->read_int16_BE = &read_int16_BE;
+
   result->write_uint16_LE = &write_uint16_LE;
   result->write_int16_LE = &write_int16_LE;
+  result->write_uint16_BE = &write_uint16_BE;
+  result->write_int16_BE = &write_int16_BE;
 
   result->read_uint32_LE = &read_uint32_LE;
   result->read_int32_LE = &read_int32_LE;
