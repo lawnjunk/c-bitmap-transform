@@ -15,7 +15,7 @@ typedef enum {
 // return type (type)
 #define make_read8(name, type) \
   type name(byte_array_t *self, size_t offset){ \
-    type *nums = (type *) self->buffer->data; \
+    type *nums = (type *) self->buffer; \
     return nums[offset]; \
   }
 
@@ -31,7 +31,7 @@ make_read8(read_int8, int8_t);
   bool name(byte_array_t *self, type value, size_t offset){ \
     if(offset > self->length) \
     return false; \
-    type *nums = (type *) self->buffer->data; \
+    type *nums = (type *) self->buffer; \
     nums[offset] = value; \
     return true; \
   }
@@ -41,7 +41,7 @@ make_write8(write_int8, int8_t);
 
 #define make_read16(name, type, endianness) \
   type name(byte_array_t *self, size_t offset){ \
-    uint8_t *nums = (uint8_t *) self->buffer->data; \
+    uint8_t *nums = (uint8_t *) self->buffer; \
     type result; \
     result = (type) nums[offset + (endianness == LE ? 1 : 0)]; \
     result = result << 8; \
@@ -57,7 +57,7 @@ make_read16(read_int16_BE, int16_t, BE);
   bool name(byte_array_t *self, type value, size_t offset){ \
     if(offset > self->length) \
     return false;  \
-    uint8_t *nums = (uint8_t *) self->buffer->data; \
+    uint8_t *nums = (uint8_t *) self->buffer; \
     nums[offset + (endianness == LE ? 0 : 1)] = value & 0xff; \
     nums[offset + (endianness == LE ? 1 : 0)] = value >> 8; \
     return true; \
@@ -70,7 +70,7 @@ write_int16(write_int16_BE, int16_t, BE);
 
 #define read_int32(name, type, endianness) \
   type name(byte_array_t *self, size_t offset){ \
-    uint8_t *nums = (uint8_t *) self->buffer->data; \
+    uint8_t *nums = (uint8_t *) self->buffer; \
     type result =            nums[offset + (endianness == LE ? 3 : 0)]; \
     result = (result << 8) | nums[offset + (endianness == LE ? 2 : 1)]; \
     result = (result << 8) | nums[offset + (endianness == LE ? 1 : 2)]; \
@@ -88,7 +88,7 @@ read_int32(read_int32_BE, int32_t, BE);
   bool name(byte_array_t *self, type value, size_t offset){ \
     if(offset > self->length) \
     return false; \
-    uint8_t *nums = (uint8_t *) self->buffer->data; \
+    uint8_t *nums = (uint8_t *) self->buffer; \
     nums[offset + (endianness == LE ? 0 : 3)] = value & 0xff ; \
     nums[offset + (endianness == LE ? 1 : 2)] = (value >> 8) & 0xff; \
     nums[offset + (endianness == LE ? 2 : 1)] = (value >> 16) & 0xff; \
@@ -108,7 +108,7 @@ int write_string(byte_array_t *self, char *str, size_t offset){
     return -1;
   }
 
-  char *buf = (char *) self->buffer->data;
+  char *buf = (char *) self->buffer;
   int i;
   for(i=0;i<strlen(str) && i<self->length; i++){
     buf[offset + i] = str[i];
@@ -128,7 +128,7 @@ int write_string(byte_array_t *self, char *str, size_t offset){
 // returns num read on success
 char *read_string(byte_array_t *self, size_t start, size_t end){
   if(end < start || end > self->length) return NULL;
-  char *buf = (char *) self->buffer->data;
+  char *buf = (char *) self->buffer;
   int length = min( self->length - start, end - start);
   char *result = (char *) GC_MALLOC(( sizeof(char) * length) + 1);
   int i;
@@ -140,7 +140,7 @@ char *read_string(byte_array_t *self, size_t start, size_t end){
 }
 
 char *to_string(byte_array_t *self){
-  char *buf = (char *) self->buffer->data;
+  char *buf = (char *) self->buffer;
   char *result = (char *) GC_MALLOC((sizeof(char) * self->length) + 1);
   int next = 0;
   char c;
@@ -154,7 +154,7 @@ char *to_string(byte_array_t *self){
 
 #define fill_byte(name, type) \
   void name(byte_array_t *self,  type num){ \
-    type *buf = (type*) self->buffer->data; \
+    type *buf = (type*) self->buffer; \
     for(int i=0; i<self->length; i++){ \
       buf[i] = num; \
     } \
@@ -168,10 +168,8 @@ fill_byte(fill_char, char);
 byte_array_t *new_byte_array(size_t length){
   // create new byte_array_t
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));
-
-  // add properties properties
-  result->buffer = new_buffer(length, UINT8);
-  result->length = result->buffer->length;
+  result->buffer = GC_MALLOC(sizeof(uint8_t) * length);
+  result->length = length;
 
   // add methods
   add_method(result, read_uint8);

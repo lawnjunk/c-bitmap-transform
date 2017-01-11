@@ -3,14 +3,13 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include "buffer.h"
 #include "macros.h"
 
 #define byte_array_t struct byte_array
 
 // this is a class
 struct byte_array {
-  buffer_t *buffer;
+  uint8_t *buffer;
   size_t length;
 
   // uint8

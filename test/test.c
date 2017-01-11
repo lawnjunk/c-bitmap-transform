@@ -35,7 +35,7 @@ MU_TEST(test_new_buffer){
 MU_TEST(test_byte_array){
   byte_array_t *bAR = new_byte_array(10);
   mu_check(bAR->length == 10);
-  mu_check(bAR->buffer->length == 10);
+  mu_check(bAR->length == 10);
 
   int i;
   uint8_t unum8;;

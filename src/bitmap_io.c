@@ -14,7 +14,7 @@ bitmap_t *read_bitmap(char *path){
   byte_array_t *b_array = new_byte_array(length);
 
   // read bytes
-  fread(b_array->buffer->data, length, 1, infile);
+  fread(b_array->buffer, length, 1, infile);
 
   // close infile
   fclose(infile);
