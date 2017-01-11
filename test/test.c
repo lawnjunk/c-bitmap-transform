@@ -161,11 +161,25 @@ MU_TEST(test_write_string){
   apply(b_array, write_string, "hello", 0);
   apply(b_array, write_string, "hello", 8);
   apply(b_array, write_string, ";{[\n", 18);
-  byte_array_print(b_array);
 
   glab = call(b_array, to_string);
-  printf("glab %s", glab);
   mu_check(equal_strings(glab , "hellohello;{[\n"));
+
+    /*123*/
+  /*012345*/
+  /*abcdef*/
+
+  // test slice
+  apply(b_array, fill_int8, 0);
+  byte_array_t *b_slice = apply(b_array, slice, 2, 5);
+  /*b_slice->buffer[5];*/
+  apply(b_slice, fill_int8, 1);
+  for(int i=0; i<b_slice->length; i++){
+    mu_check(apply(b_slice, read_int8, i) == 1);
+    mu_check(apply(b_array, read_int8, i+2) == 1);
+  }
+
+
 }
 
 MU_TEST_SUITE(test_suite) {

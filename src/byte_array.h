@@ -56,6 +56,9 @@ struct byte_array {
   void (*fill_uint8)(byte_array_t *self, uint8_t num);
   void (*fill_int8)(byte_array_t *self, int8_t num);
   void (*fill_char)(byte_array_t *self, char num);
+
+  // slice
+  byte_array_t *(*slice)(byte_array_t *self, size_t start, size_t end);
 };
 
 byte_array_t *new_byte_array(size_t length);

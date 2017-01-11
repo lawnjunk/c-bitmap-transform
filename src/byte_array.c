@@ -10,6 +10,10 @@ typedef enum {
   BE,
 } byte_array_endian;
 
+
+// type decliations for functions that are used out of order
+byte_array_t *slice(byte_array_t *self, size_t start, size_t end);
+
 // make_read8 creates a functions for reading 8bit
 // signed and unsinged ints, at a size_t offset
 // return type (type)
@@ -164,47 +168,64 @@ fill_byte(fill_uint8, uint8_t);
 fill_byte(fill_int8, int8_t);
 fill_byte(fill_char, char);
 
+static void add_byte_array_methods(byte_array_t *target){
+  // add methods
+  add_method(target, read_uint8);
+  add_method(target, read_int8);
+  add_method(target, write_uint8);
+  add_method(target, write_int8);
+
+  add_method(target, read_uint16_LE);
+  add_method(target, read_int16_LE);
+  add_method(target, read_uint16_BE);
+  add_method(target, read_int16_BE);
+
+  add_method(target, write_uint16_LE);
+  add_method(target, write_int16_LE);
+  add_method(target, write_uint16_BE);
+  add_method(target, write_int16_BE);
+
+  add_method(target, read_uint32_LE);
+  add_method(target, read_int32_LE);
+  add_method(target, read_uint32_BE);
+  add_method(target, read_int32_BE);
+
+  add_method(target, write_uint32_LE);
+  add_method(target, write_int32_LE);
+  add_method(target, write_uint32_BE);
+  add_method(target, write_int32_BE);
+
+  add_method(target, write_string);
+  add_method(target, read_string);
+  add_method(target, to_string);
+
+  add_method(target, fill_uint8);
+  add_method(target, fill_int8);
+  add_method(target, fill_char);
+
+  add_method(target, slice);
+  // return new byte_array_t
+}
+
+byte_array_t *slice(byte_array_t *self, size_t start, size_t end){
+  if (start > self->length) return NULL;
+  byte_array_t *result = (byte_array_t *) GC_MALLOC(sizeof(byte_array_t));
+  uint8_t *buf = self->buffer;
+  result->buffer =  buf + start;;
+  result->length = (end > self->length ? self->length - start: end - start); 
+  add_byte_array_methods(result);
+  return result;
+}
+
+
 byte_array_t *new_byte_array(size_t length){
   // create new byte_array_t
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));
   result->buffer = GC_MALLOC(sizeof(uint8_t) * length);
   result->length = length;
 
-  // add methods
-  add_method(result, read_uint8);
-  add_method(result, read_int8);
-  add_method(result, write_uint8);
-  add_method(result, write_int8);
+  add_byte_array_methods(result);
 
-  add_method(result, read_uint16_LE);
-  add_method(result, read_int16_LE);
-  add_method(result, read_uint16_BE);
-  add_method(result, read_int16_BE);
-
-  add_method(result, write_uint16_LE);
-  add_method(result, write_int16_LE);
-  add_method(result, write_uint16_BE);
-  add_method(result, write_int16_BE);
-
-  add_method(result, read_uint32_LE);
-  add_method(result, read_int32_LE);
-  add_method(result, read_uint32_BE);
-  add_method(result, read_int32_BE);
-
-  add_method(result, write_uint32_LE);
-  add_method(result, write_int32_LE);
-  add_method(result, write_uint32_BE);
-  add_method(result, write_int32_BE);
-
-  add_method(result, write_string);
-  add_method(result, read_string);
-  add_method(result, to_string);
-
-  add_method(result, fill_uint8);
-  add_method(result, fill_int8);
-  add_method(result, fill_char);
-
-  // return new byte_array_t
   return result;
 }
 
