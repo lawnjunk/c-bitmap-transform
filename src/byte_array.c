@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "gc.h"
-#include "byte-array.h"
+#include "byte_array.h"
 #include "macros.h"
 #include "string.h"
 #include "ctype.h"
@@ -111,7 +111,7 @@ int write_string(byte_array_t *self, char *str, size_t offset){
   char *buf = (char *) self->buffer->data;
   int i;
   for(i=0;i<strlen(str) && i<self->length; i++){
-    buf[i] = str[i];
+    buf[offset + i] = str[i];
   }
   return i;
 }
@@ -143,8 +143,10 @@ char *to_string(byte_array_t *self){
   char *buf = (char *) self->buffer->data;
   char *result = (char *) GC_MALLOC((sizeof(char) * self->length) + 1);
   int next = 0;
+  char c;
   for(int i=0; i<self->length; ++i){
-    if(isprint(buf[i])) result[next++] = buf[i];
+    c = buf[i];
+    if(isprint(c) || isspace(c)) result[next++] = c;
   }
   result[next] = '\0';
   return result;

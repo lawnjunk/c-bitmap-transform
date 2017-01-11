@@ -1,5 +1,6 @@
 #include "stdint.h"
-#include "bitmap-io.h"
+#include "bitmap_io.h"
+#include "byte_array.h"
 
 bitmap_t *read_bitmap(char *path){
   // get file pointer
@@ -10,15 +11,15 @@ bitmap_t *read_bitmap(char *path){
   fseek(infile, 0, SEEK_SET); // go back to begenning of file
 
   // allocate buffer
-  uint8_t *buffer = (uint8_t *) GC_MALLOC(length);
+  byte_array_t *b_array = new_byte_array(length);
 
   // read bytes
-  fread(buffer, length, 1, infile);
+  fread(b_array->buffer->data, length, 1, infile);
 
   // close infile
   fclose(infile);
   // make bitmap
-  return new_bitmap((uint8_t *) buffer);
+  return new_bitmap(b_array);
   // return bitmap
 
 }

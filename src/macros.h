@@ -10,6 +10,11 @@
 #define min(a,b) (((a)<(b))?(a):(b))
 #define max(a,b) (((a)>(b))?(a):(b))
 
+#define byte_array_print(input) \
+  for(int i=0; i<input->length; i++){ \
+    printf("%s[%d]: 0X%X\n", #input, i, apply(input, read_uint8, i)); \
+  }
+
 typedef enum {
   false=0,
   true,

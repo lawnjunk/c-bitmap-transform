@@ -4,15 +4,10 @@
 #include "macros.h"
 #include "minunit.h"
 #include "buffer.h"
-#include "byte-array.h"
+#include "byte_array.h"
 
 #define equal_strings(a, b) (strcmp(a, b) == 0)
 #define equal_integer(a, b) ( a == b)
-
-#define byte_array_print(input) \
-  for(int i=0; i<input->length; i++){ \
-    printf("%s[%d]: 0X%X\n", #input, i, apply(input, read_uint8, i)); \
-  }
 
 MU_TEST(test_size_of_buffer_type) {
   mu_check(size_of_buffer_type(INT) == sizeof(int32_t));
@@ -158,6 +153,19 @@ MU_TEST(test_write_string){
   for(int i=0; i<b_array->length; i++){
     mu_check((char) apply(b_array, read_uint8, i) == 'a');
   }
+
+  apply(b_array, fill_uint8, 0);
+  char *glab = call(b_array, to_string);
+  mu_check(equal_strings(glab , ""));
+
+  apply(b_array, write_string, "hello", 0);
+  apply(b_array, write_string, "hello", 8);
+  apply(b_array, write_string, ";{[\n", 18);
+  byte_array_print(b_array);
+
+  glab = call(b_array, to_string);
+  printf("glab %s", glab);
+  mu_check(equal_strings(glab , "hellohello;{[\n"));
 }
 
 MU_TEST_SUITE(test_suite) {

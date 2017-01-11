@@ -1,14 +1,15 @@
 #include <gc.h>
 #include <stdio.h>
 #include "bitmap.h"
-#include "bitmap-io.h"
+#include "bitmap_io.h"
 #include "buffer.h"
 
 int main(int argc, char **argv){
   //TODO: setup garbage collector
 
-  void *lul = GC_MALLOC(sizeof(bitmap_t));
-  new_bitmap(lul);
+  read_bitmap(argv[1]);
+
+  /*void *lul = GC_MALLOC(sizeof(bitmap_t));*/
   printf("sdlfkjsdlfk \
       lsfdkjdfj\
       lskdfldfkj\
