@@ -3,6 +3,7 @@
 #include "byte-array.h"
 #include "macros.h"
 #include "string.h"
+#include "ctype.h"
 
 typedef enum {
   LE,
@@ -129,15 +130,24 @@ char *read_string(byte_array_t *self, size_t start, size_t end){
   if(end < start || end > self->length) return NULL;
   char *buf = (char *) self->buffer->data;
   int length = min( self->length - start, end - start);
-  char *result = (char *) GC_MALLOC(length);
-  for(int i=0; i<length; i++){
+  char *result = (char *) GC_MALLOC(( sizeof(char) * length) + 1);
+  int i;
+  for( i=0; i<length; i++){
     result[i] = buf[i];
   }
+  result[i] = '\0';
   return result;
 }
 
 char *to_string(byte_array_t *self){
-  return read_string(self, 0, self->length);
+  char *buf = (char *) self->buffer->data;
+  char *result = (char *) GC_MALLOC((sizeof(char) * self->length) + 1);
+  int next = 0;
+  for(int i=0; i<self->length; ++i){
+    if(isprint(buf[i])) result[next++] = buf[i];
+  }
+  result[next] = '\0';
+  return result;
 }
 
 byte_array_t *new_byte_array(size_t length){

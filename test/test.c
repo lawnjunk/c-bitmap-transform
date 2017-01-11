@@ -1,9 +1,13 @@
 #include <stdint.h>
+#include <string.h>
 
 #include "macros.h"
 #include "minunit.h"
 #include "buffer.h"
 #include "byte-array.h"
+
+#define equal_strings(a, b) (strcmp(a, b) == 0)
+#define equal_integer(a, b) ( a == b)
 
 #define byte_array_print(input) \
   for(int i=0; i<input->length; i++){ \
@@ -125,7 +129,7 @@ MU_TEST(test_byte_array){
   test_int32 = apply(bAR, read_uint32_LE, 0);
   mu_check(test_int32 == 0xaa7700ff);
   test_int32 = apply(bAR, read_uint32_BE, 0);
-  mu_check(test_int32 == 0xff0077aa);
+  mu_check(equal_integer(test_int32, 0xff0077aa));
 
 }
 
@@ -147,10 +151,9 @@ MU_TEST(test_write_string){
   char compare[5] = {'h', 'e', 'l', 'l', 'o' };
 
   mu_check(char_byte_compare(result, compare, 5));
+  mu_check(equal_strings(result, "hello"));
+  mu_check(equal_strings(call(b_array, to_string), "hello world"));
 
-  /*for(int i=0; i<5;i++){*/
-    /*mu_check(result[i] == compare[i]);*/
-  /*}*/
 }
 
 
