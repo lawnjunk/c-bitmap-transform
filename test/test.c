@@ -8,7 +8,7 @@
 #define byte_array_print(input) \
   for(int i=0; i<input->length; i++){ \
     printf("%s[%d]: 0X%X\n", #input, i, apply(input, read_uint8, i)); \
-  } 
+  }
 
 MU_TEST(test_size_of_buffer_type) {
   mu_check(size_of_buffer_type(INT) == sizeof(int32_t));
@@ -50,7 +50,7 @@ MU_TEST(test_byte_array){
   // testing write_uint8 with valid offset
   bool check = apply(bAR, write_uint8, 2, 1);
   mu_check(check == true);
-  // testing read_uint8 
+  // testing read_uint8
   unum8 = apply(bAR, read_uint8, 1);
   mu_check(unum8 = 2);
 
@@ -61,11 +61,11 @@ MU_TEST(test_byte_array){
   // testing write_int8 with valid offset
   check = apply(bAR, write_int8, -120, 9);
   mu_check(check == true);
-  // testing read_int8 
+  // testing read_int8
   num8 = apply(bAR, read_int8, 9);
   mu_check(num8 == -120);
 
-   /*testing write_uint16_LE */
+  /*testing write_uint16_LE */
   check = apply(bAR, write_uint16_LE, 0xffee, 0);
   mu_check(check == true);
 
@@ -76,15 +76,13 @@ MU_TEST(test_byte_array){
   unum8 = apply(bAR, read_uint8, 1);
   mu_check(unum8 ==  0xff);
 
-  // testing read_uint16_LE  
+  // testing read_uint16_LE
   uint16_t uint16;
   uint16 = apply(bAR, read_uint16_LE, 0);
   mu_check(uint16 == 0xffee);
 
   uint16 = apply(bAR, read_int16_LE, 0);
   mu_check(uint16 == 0xffee);
-  /*check = apply(bAR, write_int16_LE, 0xAFB7, 2);*/
-  /*mu_check(check == true);*/
 
   mu_check(apply(bAR, write_uint16_BE, 0xffaa, 3));
   mu_check(apply(bAR, read_uint16_BE, 3) == 0xffaa);
@@ -96,7 +94,7 @@ MU_TEST(test_byte_array){
   mu_check(unum8 ==  0xbb);
   unum8 = apply(bAR, read_uint8, 2);
   mu_check(unum8 ==  0xaa);
-  
+
   puts("");
   byte_array_print(bAR);
 
@@ -129,14 +127,39 @@ MU_TEST(test_byte_array){
   test_int32 = apply(bAR, read_uint32_BE, 0);
   mu_check(test_int32 == 0xff0077aa);
 
-
 }
-  
+
+#define for_range(a, b) \
+  for(int i=a; i<b; i++)
+
+MU_TEST(test_write_string){
+  byte_array_t *b_array = new_byte_array(25);
+  apply(b_array, write_string, "hello world", 0);
+
+  for(int i=0; i<10; i++){
+    printf("%c", apply(b_array, read_uint8, i));
+  }
+  mu_check(1);
+
+
+  apply(b_array, write_string, "hello world", 0);
+  char *result    = apply(b_array, read_string, 0, 5);
+  char compare[5] = {'h', 'e', 'l', 'l', 'o' };
+
+  mu_check(char_byte_compare(result, compare, 5));
+
+  /*for(int i=0; i<5;i++){*/
+    /*mu_check(result[i] == compare[i]);*/
+  /*}*/
+}
+
+
 
 MU_TEST_SUITE(test_suite) {
   MU_RUN_TEST(test_size_of_buffer_type);
   MU_RUN_TEST(test_new_buffer);
   MU_RUN_TEST(test_byte_array);
+  MU_RUN_TEST(test_write_string);
 }
 
 int main(int argc, char *argv[]) {

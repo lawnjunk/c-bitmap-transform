@@ -47,6 +47,11 @@ struct byte_array {
   //in32 BE
   int32_t (*read_int32_BE)(byte_array_t *self, size_t offset);
   bool (*write_int32_BE)(byte_array_t *self, int32_t value, size_t offset);
+
+  // strings
+  int (*write_string)(byte_array_t *self, char *str, size_t offset);
+  char *(*read_string)(byte_array_t *self, size_t start, size_t end);
+  char *(*to_string)(byte_array_t *self);
 };
 
 byte_array_t *new_byte_array(size_t length);
