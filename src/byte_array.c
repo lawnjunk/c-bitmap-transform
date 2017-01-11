@@ -164,7 +164,6 @@ fill_byte(fill_uint8, uint8_t);
 fill_byte(fill_int8, int8_t);
 fill_byte(fill_char, char);
 
-
 byte_array_t *new_byte_array(size_t length){
   // create new byte_array_t
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));
@@ -206,5 +205,19 @@ byte_array_t *new_byte_array(size_t length){
   add_method(result, fill_char);
 
   // return new byte_array_t
+  return result;
+}
+
+byte_array_t *new_byte_array_from_file(FILE *infile){
+  fseek(infile, 0, SEEK_END); // jump to end of file
+  size_t  length = ftell(infile); // get length
+  fseek(infile, 0, SEEK_SET); // go back to begenning of file
+
+  // allocate buffer
+  byte_array_t *result = new_byte_array(length);
+  
+  // read bytes
+  fread(result->buffer, length, 1, infile);
+
   return result;
 }

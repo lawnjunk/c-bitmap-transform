@@ -59,5 +59,6 @@ struct byte_array {
 };
 
 byte_array_t *new_byte_array(size_t length);
+byte_array_t *new_byte_array_from_file(FILE *infile);
 
 #endif
