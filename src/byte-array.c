@@ -164,42 +164,47 @@ fill_byte(fill_char, char);
 
 
 byte_array_t *new_byte_array(size_t length){
+  // create new byte_array_t
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));
+
+  // add properties properties
   result->buffer = new_buffer(length, UINT8);
+  result->length = result->buffer->length;
 
-  result->length = length;
+  // add methods
+  add_method(result, read_uint8);
+  add_method(result, read_int8);
+  add_method(result, write_uint8);
+  add_method(result, write_int8);
 
-  result->read_uint8 = &read_uint8;
-  result->read_int8 = &read_int8;
-  result->write_uint8 = &write_uint8;
-  result->write_int8 = &write_int8;
+  add_method(result, read_uint16_LE);
+  add_method(result, read_int16_LE);
+  add_method(result, read_uint16_BE);
+  add_method(result, read_int16_BE);
 
-  result->read_uint16_LE = &read_uint16_LE;
-  result->read_int16_LE = &read_int16_LE;
-  result->read_uint16_BE = &read_uint16_BE;
-  result->read_int16_BE = &read_int16_BE;
+  add_method(result, write_uint16_LE);
+  add_method(result, write_int16_LE);
+  add_method(result, write_uint16_BE);
+  add_method(result, write_int16_BE);
 
-  result->write_uint16_LE = &write_uint16_LE;
-  result->write_int16_LE = &write_int16_LE;
-  result->write_uint16_BE = &write_uint16_BE;
-  result->write_int16_BE = &write_int16_BE;
+  add_method(result, read_uint32_LE);
+  add_method(result, read_int32_LE);
+  add_method(result, read_uint32_BE);
+  add_method(result, read_int32_BE);
 
-  result->read_uint32_LE = &read_uint32_LE;
-  result->read_int32_LE = &read_int32_LE;
-  result->read_uint32_BE = &read_uint32_BE;
-  result->read_int32_BE = &read_int32_BE;
+  add_method(result, write_uint32_LE);
+  add_method(result, write_int32_LE);
+  add_method(result, write_uint32_BE);
+  add_method(result, write_int32_BE);
 
-  result->write_uint32_LE = &write_uint32_LE;
-  result->write_int32_LE = &write_int32_LE;
-  result->write_uint32_BE = &write_uint32_BE;
-  result->write_int32_BE = &write_int32_BE;
-
-  result->write_string = &write_string;
-  result->read_string = &read_string;
-  result->to_string = &to_string;
+  add_method(result, write_string);
+  add_method(result, read_string);
+  add_method(result, to_string);
 
   add_method(result, fill_uint8);
   add_method(result, fill_int8);
   add_method(result, fill_char);
+
+  // return new byte_array_t
   return result;
 }

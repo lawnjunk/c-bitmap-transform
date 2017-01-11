@@ -99,9 +99,6 @@ MU_TEST(test_byte_array){
   unum8 = apply(bAR, read_uint8, 2);
   mu_check(unum8 ==  0xaa);
 
-  puts("");
-  byte_array_print(bAR);
-
   uint32_t test_uint32;
   apply(bAR, write_uint16_LE, 0xffaa, 2);
   apply(bAR, write_uint16_LE, 0xbbee, 0);
@@ -130,7 +127,6 @@ MU_TEST(test_byte_array){
   mu_check(test_int32 == 0xaa7700ff);
   test_int32 = apply(bAR, read_uint32_BE, 0);
   mu_check(equal_integer(test_int32, 0xff0077aa));
-
 }
 
 #define for_range(a, b) \
@@ -140,16 +136,9 @@ MU_TEST(test_write_string){
   byte_array_t *b_array = new_byte_array(25);
   apply(b_array, write_string, "hello world", 0);
 
-  for(int i=0; i<10; i++){
-    printf("%c", apply(b_array, read_uint8, i));
-  }
-  mu_check(1);
-
-
   apply(b_array, write_string, "hello world", 0);
   char *result    = apply(b_array, read_string, 0, 5);
   char compare[5] = {'h', 'e', 'l', 'l', 'o' };
-
   mu_check(char_byte_compare(result, compare, 5));
   mu_check(equal_strings(result, "hello"));
   mu_check(equal_strings(call(b_array, to_string), "hello world"));
@@ -158,6 +147,16 @@ MU_TEST(test_write_string){
   apply(b_array, fill_uint8, 0);
   for(int i=0; i<b_array->length; i++){
     mu_check(apply(b_array, read_uint8, i) == 0);
+  }
+
+  apply(b_array, fill_int8, -3);
+  for(int i=0; i<b_array->length; i++){
+    mu_check(apply(b_array, read_int8, i) == -3);
+  }
+
+  apply(b_array, fill_char, 'a');
+  for(int i=0; i<b_array->length; i++){
+    mu_check((char) apply(b_array, read_uint8, i) == 'a');
   }
 }
 
