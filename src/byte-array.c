@@ -30,7 +30,7 @@ make_read8(read_int8, int8_t);
 #define make_write8(name, type) \
   bool name(byte_array_t *self, type value, size_t offset){ \
     if(offset > self->length) \
-      return false; \
+    return false; \
     type *nums = (type *) self->buffer->data; \
     nums[offset] = value; \
     return true; \
@@ -56,7 +56,7 @@ make_read16(read_int16_BE, int16_t, BE);
 #define write_int16(name, type, endianness) \
   bool name(byte_array_t *self, type value, size_t offset){ \
     if(offset > self->length) \
-      return false;  \
+    return false;  \
     uint8_t *nums = (uint8_t *) self->buffer->data; \
     nums[offset + (endianness == LE ? 0 : 1)] = value & 0xff; \
     nums[offset + (endianness == LE ? 1 : 0)] = value >> 8; \
@@ -87,7 +87,7 @@ read_int32(read_int32_BE, int32_t, BE);
 #define make_write32(name, type, endianness) \
   bool name(byte_array_t *self, type value, size_t offset){ \
     if(offset > self->length) \
-      return false; \
+    return false; \
     uint8_t *nums = (uint8_t *) self->buffer->data; \
     nums[offset + (endianness == LE ? 0 : 3)] = value & 0xff ; \
     nums[offset + (endianness == LE ? 1 : 2)] = (value >> 8) & 0xff; \
@@ -119,11 +119,11 @@ int write_string(byte_array_t *self, char *str, size_t offset){
 // working out how much mem to alocate for read_string
 /*0123456*/
 /*"hello"*/
-   /*.....*/
-   /*min(l - s, e - s) ==  alocate_length*/
-   /*min(6 - 3, 7 - 3) ==  3*/
-   /*min(  3  , 4    ) ==  3*/
-   
+/*.....*/
+/*min(l - s, e - s) ==  alocate_length*/
+/*min(6 - 3, 7 - 3) ==  3*/
+/*min(  3  , 4    ) ==  3*/
+
 // returns -1 on fail
 // returns num read on success
 char *read_string(byte_array_t *self, size_t start, size_t end){
@@ -150,9 +150,23 @@ char *to_string(byte_array_t *self){
   return result;
 }
 
+#define fill_byte(name, type) \
+  void name(byte_array_t *self,  type num){ \
+    type *buf = (type*) self->buffer->data; \
+    for(int i=0; i<self->length; i++){ \
+      buf[i] = num; \
+    } \
+  }
+
+fill_byte(fill_uint8, uint8_t);
+fill_byte(fill_int8, int8_t);
+fill_byte(fill_char, char);
+
+
 byte_array_t *new_byte_array(size_t length){
   byte_array_t *result = GC_MALLOC(sizeof(byte_array_t));
   result->buffer = new_buffer(length, UINT8);
+
   result->length = length;
 
   result->read_uint8 = &read_uint8;
@@ -183,5 +197,9 @@ byte_array_t *new_byte_array(size_t length){
   result->write_string = &write_string;
   result->read_string = &read_string;
   result->to_string = &to_string;
+
+  add_method(result, fill_uint8);
+  add_method(result, fill_int8);
+  add_method(result, fill_char);
   return result;
 }

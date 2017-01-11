@@ -154,9 +154,12 @@ MU_TEST(test_write_string){
   mu_check(equal_strings(result, "hello"));
   mu_check(equal_strings(call(b_array, to_string), "hello world"));
 
+  // fill with 0's
+  apply(b_array, fill_uint8, 0);
+  for(int i=0; i<b_array->length; i++){
+    mu_check(apply(b_array, read_uint8, i) == 0);
+  }
 }
-
-
 
 MU_TEST_SUITE(test_suite) {
   MU_RUN_TEST(test_size_of_buffer_type);
