@@ -211,12 +211,11 @@ byte_array_t *slice(byte_array_t *self, size_t start, size_t end){
   if (start > self->length) return NULL;
   byte_array_t *result = (byte_array_t *) GC_MALLOC(sizeof(byte_array_t));
   uint8_t *buf = self->buffer;
-  result->buffer =  buf + start;;
+  result->buffer =  buf + start;
   result->length = (end > self->length ? self->length - start: end - start); 
   add_byte_array_methods(result);
   return result;
 }
-
 
 byte_array_t *new_byte_array(size_t length){
   // create new byte_array_t

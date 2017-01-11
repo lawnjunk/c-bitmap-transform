@@ -12,4 +12,15 @@ bitmap_t *read_bitmap(char *path){
 
 }
 
-int write_bitmap(bitmap_t *t);
+bool write_bitmap(char *path, bitmap_t *bitmap){
+  FILE *outfile = fopen(path, "w");
+  if(outfile == NULL){
+    fprintf(stderr, "Error opening file\n");
+    return false;
+  }
+
+  char *buf = (char *) bitmap->data->buffer;
+  size_t length = bitmap->data->length;
+  fwrite(buf, 1, length, outfile);
+  return true;
+}

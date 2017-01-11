@@ -87,6 +87,8 @@ MU_TEST(test_byte_array){
   mu_check(apply(bAR, read_uint16_BE, 3) == 0xffaa);
   mu_check(apply(bAR, read_uint16_LE, 3) == 0xaaff);
 
+
+
   check = apply(bAR, write_int16_LE, 0xaabb, 1);
   mu_check(check == true);
   unum8 = apply(bAR, read_uint8, 1);
@@ -178,8 +180,6 @@ MU_TEST(test_write_string){
     mu_check(apply(b_slice, read_int8, i) == 1);
     mu_check(apply(b_array, read_int8, i+2) == 1);
   }
-
-
 }
 
 MU_TEST_SUITE(test_suite) {

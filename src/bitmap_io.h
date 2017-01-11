@@ -5,6 +5,6 @@
 #include "bitmap.h"
 
 bitmap_t *read_bitmap(char *path);
-int write_bitmap(bitmap_t *t);
+bool write_bitmap(char* path, bitmap_t *bitmap);
 
 #endif

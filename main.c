@@ -7,19 +7,13 @@
 int main(int argc, char **argv){
   //TODO: setup garbage collector
   GC_INIT();
-  /*read_bitmap(argv[1]);*/
-
-  uint8_t *lul = GC_MALLOC(20);
-  uint8_t *wat = lul + 5;
-  for(int i=0;i<20;i++){
-    lul[i] = 0;
-    printf("%u", lul[i]);
-  }
-
-  printf("wat");
-  for(int i=0;i<10;i++){
-    printf("%u", wat[i]);
-  }
+  bitmap_t *bm = read_bitmap(argv[1]);
+  call(bm, invert);
+  bool check = write_bitmap(argv[2], bm);
+  if(!check) 
+    puts("something when wrong");
+  puts("booya success!");
+  /*printf("width: %u, height: %u", bm->width, bm->height);*/
 
   return 0;
 }
