@@ -1,5 +1,6 @@
 CFLAGS = -Wall
-INCLUDE = -I ../include -I .
+INCLUDE = -I ../src -I .
+SOURCE = ../src/*.c
 LIBS = -lgc
 
 
@@ -8,4 +9,4 @@ run: build
 	rm ./tests
 	
 build: 
-	clang ${CFLAGS} ${INCLUDE} test.c ../include/*.c ${LIBS} -o tests
+	clang ${CFLAGS} ${INCLUDE} test.c ${SOURCE} ${LIBS} -o tests
